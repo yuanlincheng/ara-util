@@ -1,6 +1,7 @@
 package com.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
@@ -52,5 +53,35 @@ public class CommonObjectUtil {
         } catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     *  类型转换函数，去除cast类型转换警告
+     * @param obj Object对象
+     * @return T 泛型对象
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T cast(Object obj) {
+        return (T) obj;
+    }
+
+    public static <T> T convert(Object obj)  {
+        Method convert = null;
+        try {
+            convert = obj.getClass().getMethod("convert",  new Class[] {obj.getClass()});
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        //获得参数Object
+        Object[] arguments = new Object[]{obj};
+        //执行方法
+        try {
+            return (T) convert.invoke(obj , arguments);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
